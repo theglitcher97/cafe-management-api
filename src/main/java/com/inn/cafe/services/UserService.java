@@ -1,3 +1,9 @@
-package com.inn.cafe.services.service_impl;
+package com.inn.cafe.services;
 
-public interface UserService {}
+import com.inn.cafe.VOS.UserVO;
+import org.apache.coyote.BadRequestException;
+
+public interface UserService {
+
+  void signup(UserVO userVO) throws BadRequestException;
+}
