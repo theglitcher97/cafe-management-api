@@ -6,4 +6,6 @@ import org.apache.coyote.BadRequestException;
 public interface UserService {
 
   void signup(UserVO userVO) throws BadRequestException;
+
+  String login(UserVO userVO) throws BadRequestException;
 }

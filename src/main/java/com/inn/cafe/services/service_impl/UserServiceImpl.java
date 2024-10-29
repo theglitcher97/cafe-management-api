@@ -3,18 +3,29 @@ package com.inn.cafe.services.service_impl;
 import com.inn.cafe.VOS.UserVO;
 import com.inn.cafe.dao.UserDAO;
 import com.inn.cafe.entities.User;
+import com.inn.cafe.jwt.CustomerUserDetailService;
+import com.inn.cafe.jwt.JwtUtil;
 import com.inn.cafe.services.UserService;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.AuthenticationManager;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
   @Autowired private UserDAO userDAO;
+  @Autowired private AuthenticationManager authenticationManager;
+  @Autowired private JwtUtil jwtUtil;
+  @Autowired private CustomerUserDetailService userDetailService;
 
   @Override
   @Transactional
@@ -28,11 +39,30 @@ public class UserServiceImpl implements UserService {
     this.userDAO.save(user);
   }
 
+  @Override
+  public String login(UserVO userVO) throws BadRequestException {
+    UsernamePasswordAuthenticationToken authenticationToken =
+        new UsernamePasswordAuthenticationToken(userVO.getEmail(), userVO.getPassword());
+    Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
+
+    if (!authentication.isAuthenticated())
+      throw new BadRequestException("");
+
+    if (this.userDetailService.getUserDetails().getStatus().equalsIgnoreCase("false"))
+      throw new BadRequestException("Waiting for admin approval");
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    return this.jwtUtil.generateToken(
+        this.userDetailService.getUserDetails().getEmail(),
+        this.userDetailService.getUserDetails().getRole());
+  }
+
   private boolean validateUserData(UserVO userVO) {
-    if(userVO.getName() == null || userVO.getName().isBlank()) return false;
-    if(userVO.getEmail() == null || userVO.getEmail().isBlank()) return false;
-    if(userVO.getPassword() == null || userVO.getPassword().isBlank()) return false;
-    if(userVO.getContactNumber() == null || userVO.getContactNumber().isBlank()) return false;
+    if (userVO.getName() == null || userVO.getName().isBlank()) return false;
+    if (userVO.getEmail() == null || userVO.getEmail().isBlank()) return false;
+    if (userVO.getPassword() == null || userVO.getPassword().isBlank()) return false;
+    if (userVO.getContactNumber() == null || userVO.getContactNumber().isBlank()) return false;
 
     return true;
   }
