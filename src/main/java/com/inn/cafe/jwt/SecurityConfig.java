@@ -45,7 +45,7 @@ public class SecurityConfig {
     httpSecurity.authorizeHttpRequests(
         configure ->
             configure
-                .requestMatchers("/users/login", "users/forgot-password")
+                .requestMatchers("/auth/login", "/auth/signup", "auth/forgot-password")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

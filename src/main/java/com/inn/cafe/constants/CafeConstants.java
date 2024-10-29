@@ -8,4 +8,6 @@ public class CafeConstants {
   public static final long ONE_HOUR = 1000 * 60 * 60;
   public static final String ADMIN = "ADMIN";
   public static final String USER = "USER";
+  public static final String ENTITY_NOT_FOUND = "Entity not found";
+  public static final String NOT_AUTHORIZED = "Not authorized";
 }

@@ -1,18 +1,21 @@
 package com.inn.cafe.rest;
 
 import com.inn.cafe.VOS.UserVO;
-import java.util.Map;
+import com.inn.cafe.wrapper.UserWrapper;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/users")
 public interface UserRest {
 
-  @PostMapping("/signup")
-  ResponseEntity<String> signup(@RequestBody(required = true) UserVO userVO);
+  @GetMapping
+  ResponseEntity<List<UserWrapper>> getUsers();
 
-  @PostMapping("/login")
-  ResponseEntity<String> login(@RequestBody(required = true) UserVO userVO);
+  @PutMapping("/{id}")
+  ResponseEntity<String> update(@PathVariable("id") int id, @RequestBody UserVO userVO);
 }

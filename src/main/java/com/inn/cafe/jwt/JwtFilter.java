@@ -63,11 +63,11 @@ public class JwtFilter extends OncePerRequestFilter {
     filterChain.doFilter(request, response);
   }
 
-  private boolean isAdmin() {
+  public boolean isAdmin() {
     return CafeConstants.ADMIN.equalsIgnoreCase((String) claims.get("role"));
   }
 
-  private boolean isUser() {
+  public boolean isUser() {
     return CafeConstants.USER.equalsIgnoreCase((String) claims.get("role"));
   }
 
