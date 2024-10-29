@@ -18,7 +18,7 @@ import org.hibernate.annotations.DynamicUpdate;
 // ':email' makes reference to the param 'email' found in the DAO
 @NamedQuery(name = "User.findByEmail", query = "Select u from User u where u.email = :email")
 @NamedQuery(name = "User.findAllUsers", query = "Select new com.inn.cafe.wrapper.UserWrapper(id, name, email, contactNumber, status) from User u where u.role='user'")
-@NamedQuery(name = "User.findAllAdmins", query = "Select new com.inn.cafe.wrapper.UserWrapper(id, name, email, contactNumber, status) from User u where u.role='admin'")
+@NamedQuery(name = "User.findAllAdmins", query = "Select u.email from User u where u.role='admin'")
 
 @Entity
 @DynamicInsert

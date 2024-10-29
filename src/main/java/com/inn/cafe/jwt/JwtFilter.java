@@ -71,7 +71,7 @@ public class JwtFilter extends OncePerRequestFilter {
     return CafeConstants.USER.equalsIgnoreCase((String) claims.get("role"));
   }
 
-  private String  getCurrentUserName(){
+  public String  getCurrentUserName(){
     return this.username;
   }
 
