@@ -1,5 +1,6 @@
 package com.inn.cafe.rest;
 
+import com.inn.cafe.VOS.ChangePasswordVO;
 import com.inn.cafe.VOS.UserVO;
 import com.inn.cafe.wrapper.UserWrapper;
 import java.util.List;
@@ -18,4 +19,7 @@ public interface UserRest {
 
   @PutMapping("/{id}")
   ResponseEntity<String> update(@PathVariable("id") int id, @RequestBody UserVO userVO);
+
+  @PutMapping("/change-password")
+  ResponseEntity<String> changePassword(@RequestBody() ChangePasswordVO changePasswordVO);
 }

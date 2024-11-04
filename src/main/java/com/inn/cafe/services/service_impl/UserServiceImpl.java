@@ -1,5 +1,6 @@
 package com.inn.cafe.services.service_impl;
 
+import com.inn.cafe.VOS.ChangePasswordVO;
 import com.inn.cafe.VOS.UserVO;
 import com.inn.cafe.constants.CafeConstants;
 import com.inn.cafe.dao.UserDAO;
@@ -18,7 +19,9 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,6 +60,24 @@ public class UserServiceImpl implements UserService {
 
     List<String> admins = this.userDAO.findAllAdmins();
     this.sendEmailToAdmins(userVO.getStatus(), user.getEmail(), admins);
+  }
+
+  @Override
+  @Transactional
+  public void changePassword(ChangePasswordVO changePasswordVO) {
+    if (changePasswordVO.getOldPassword() == null || changePasswordVO.getNewPassword() == null)
+      throw new BadCredentialsException("Invalid data");
+
+    User user = this.userDAO.findByEmail(this.jwtFilter.getCurrentUserName());
+
+    if (user == null)
+      throw new EntityNotFoundException("");
+
+    if (!user.getPassword().equals(changePasswordVO.getOldPassword()))
+      throw new BadCredentialsException("Incorrect old password");
+
+    user.setPassword(changePasswordVO.getNewPassword());
+    this.userDAO.save(user);
   }
 
   private void sendEmailToAdmins(String status, String user, List<String> admins) {
