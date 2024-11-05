@@ -1,11 +1,12 @@
 package com.inn.cafe.rest.rest_impl;
 
+import com.inn.cafe.VOS.RecoverPasswordVO;
 import com.inn.cafe.VOS.UserVO;
 import com.inn.cafe.constants.CafeConstants;
 import com.inn.cafe.rest.AuthRest;
 import com.inn.cafe.services.AuthService;
-import com.inn.cafe.services.UserService;
 import com.inn.cafe.utils.CafeUtils;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +49,15 @@ public class AuhtRestimpl implements AuthRest {
 
     return CafeUtils.getResponseEntity(
         CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @Override
+  public ResponseEntity<String> forgotPassword(RecoverPasswordVO recoverPassword) {
+    try {
+      this.authService.recoverPassword(recoverPassword);
+      return ResponseEntity.ok("OK");
+    } catch (Exception e) {
+      return CafeUtils.getResponseEntity(CafeConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

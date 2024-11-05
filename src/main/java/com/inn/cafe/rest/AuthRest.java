@@ -1,8 +1,10 @@
 package com.inn.cafe.rest;
 
+import com.inn.cafe.VOS.RecoverPasswordVO;
 import com.inn.cafe.VOS.UserVO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -13,4 +15,7 @@ public interface AuthRest {
 
   @PostMapping(path ="/login")
   ResponseEntity<String> login(@RequestBody(required = true) UserVO userVO);
+
+  @PutMapping("/forgot-password")
+  ResponseEntity<String> forgotPassword(@RequestBody() RecoverPasswordVO forgotPasswordVO);
 }

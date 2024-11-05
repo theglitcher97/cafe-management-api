@@ -1,12 +1,17 @@
 package com.inn.cafe.services.service_impl;
 
+import com.inn.cafe.VOS.RecoverPasswordVO;
 import com.inn.cafe.VOS.UserVO;
+import com.inn.cafe.constants.CafeConstants;
 import com.inn.cafe.dao.UserDAO;
 import com.inn.cafe.entities.User;
 import com.inn.cafe.jwt.CustomerUserDetailService;
 import com.inn.cafe.jwt.JwtUtil;
 import com.inn.cafe.services.AuthService;
+import com.inn.cafe.utils.EmailUtils;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +27,8 @@ public class AuthServiceImpl implements AuthService {
   @Autowired private JwtUtil jwtUtil;
   @Autowired private CustomerUserDetailService userDetailService;
   @Autowired private UserDAO userDAO;
+  @Autowired private EmailUtils emailUtils;
+
 
 
   @Override
@@ -52,6 +59,16 @@ public class AuthServiceImpl implements AuthService {
     return this.jwtUtil.generateToken(
         this.userDetailService.getUserDetails().getEmail(),
         this.userDetailService.getUserDetails().getRole());
+  }
+
+  @Override
+  public void recoverPassword(RecoverPasswordVO recoverPassword) throws MessagingException {
+    User user = this.userDAO.findByEmail(recoverPassword.getEmail());
+
+    if (user == null)
+      return;
+
+    this.emailUtils.forgotPasswordEmail(user.getEmail(), CafeConstants.CREDENTIALS, user.getPassword());
   }
 
   private boolean validateUserData(UserVO userVO) {

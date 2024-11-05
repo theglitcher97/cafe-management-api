@@ -10,4 +10,5 @@ public class CafeConstants {
   public static final String USER = "USER";
   public static final String ENTITY_NOT_FOUND = "Entity not found";
   public static final String NOT_AUTHORIZED = "Not authorized";
+  public static final String CREDENTIALS = "Credentials by Cafe Management System";
 }

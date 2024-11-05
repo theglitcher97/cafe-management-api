@@ -22,4 +22,6 @@ public interface UserRest {
 
   @PutMapping("/change-password")
   ResponseEntity<String> changePassword(@RequestBody() ChangePasswordVO changePasswordVO);
+
+
 }
