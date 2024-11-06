@@ -6,7 +6,6 @@ import com.inn.cafe.constants.CafeConstants;
 import com.inn.cafe.rest.AuthRest;
 import com.inn.cafe.services.AuthService;
 import com.inn.cafe.utils.CafeUtils;
-import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
