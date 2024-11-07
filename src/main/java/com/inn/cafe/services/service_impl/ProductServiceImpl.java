@@ -29,8 +29,7 @@ public class ProductServiceImpl implements ProductService {
     if (!this.jwtFilter.isAdmin()) throw new AuthorizationServiceException("");
 
     Category category = this.categoryDAO.findById(productVO.getCategory()).orElse(null);
-    if (category == null)
-      throw new EntityNotFoundException("Category not found");
+    if (category == null) throw new EntityNotFoundException("Category not found");
 
     Product product = this.createProductFromVO(productVO);
     product.setCategory(category);
@@ -49,8 +48,7 @@ public class ProductServiceImpl implements ProductService {
     if (!this.jwtFilter.isAdmin()) throw new AuthorizationServiceException("");
 
     Product product = this.productDAO.findById(productVO.getId()).orElse(null);
-    if (product == null)
-      throw new EntityNotFoundException("Product not found");
+    if (product == null) throw new EntityNotFoundException("Product not found");
 
     product.setName(productVO.getName());
     product.setPrice(productVO.getPrice());
@@ -58,6 +56,41 @@ public class ProductServiceImpl implements ProductService {
     product.setStatus(productVO.getStatus());
 
     this.productDAO.save(product);
+  }
+
+  @Override
+  public void removeProduct(int id) {
+    if (!this.jwtFilter.isAdmin()) throw new AuthorizationServiceException("");
+
+    Product product = this.productDAO.findById(id).orElse(null);
+    if (product == null) throw new EntityNotFoundException("Product not found");
+
+    this.productDAO.delete(product);
+  }
+
+  @Override
+  public ProductWrapper getProductById(Integer id) {
+    ProductWrapper product = this.productDAO.findProductById(id);
+    if (product == null) throw new EntityNotFoundException("Product not found");
+    return product;
+  }
+
+  @Override
+  public void updateProductStatus(ProductVO productVO) throws BadRequestException {
+    if (productVO.getId() == null
+        || productVO.getStatus() == null
+        || productVO.getStatus().isBlank()) throw new BadRequestException();
+
+    if (!this.jwtFilter.isAdmin()) throw new AuthorizationServiceException("");
+
+//    Product product = this.productDAO.findById(productVO.getId()).orElse(null);
+    if (!this.productDAO.existsById(productVO.getId())) throw new EntityNotFoundException("Product not found");
+    this.productDAO.updateProductStatus(productVO.getId(), productVO.getStatus());
+  }
+
+  @Override
+  public List<ProductWrapper> findProductsByCategoryId(Integer id) {
+    return this.productDAO.findProductsByCategoryId(id);
   }
 
   private Product createProductFromVO(ProductVO productVO) {

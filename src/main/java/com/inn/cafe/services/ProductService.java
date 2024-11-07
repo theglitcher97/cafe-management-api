@@ -14,4 +14,12 @@ public interface ProductService {
   List<ProductWrapper> getAll();
 
   void update(ProductVO productVO) throws BadRequestException;
+
+  void removeProduct(int id);
+
+  ProductWrapper getProductById(Integer id);
+
+  void updateProductStatus(ProductVO productVO) throws BadRequestException;
+
+  List<ProductWrapper> findProductsByCategoryId(Integer id);
 }

@@ -36,7 +36,6 @@ public class ProductRestImpl implements ProductRest {
 
   @Override
   public ResponseEntity<List<ProductWrapper>> getProducts() {
-    List<ProductWrapper> productWrappers = this.productService.getAll();
     return ResponseEntity.ok(this.productService.getAll());
   }
 
@@ -51,6 +50,54 @@ public class ProductRestImpl implements ProductRest {
       return CafeUtils.getResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
     } catch (AuthorizationServiceException e) {
       return CafeUtils.getResponseEntity(CafeConstants.NOT_AUTHORIZED, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @Override
+  public ResponseEntity<String> deleteProduct(int id) {
+    try {
+      this.productService.removeProduct(id);
+      return CafeUtils.getResponseEntity("OK", HttpStatus.OK);
+    } catch (EntityNotFoundException e) {
+      return CafeUtils.getResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+    } catch (AuthorizationServiceException e) {
+      return CafeUtils.getResponseEntity(CafeConstants.NOT_AUTHORIZED, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @Override
+  public ResponseEntity<ProductWrapper> getProductById(Integer id) {
+    try {
+      ProductWrapper product = this.productService.getProductById(id);
+      return new ResponseEntity<>(product, HttpStatus.OK);
+    } catch (EntityNotFoundException e) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    } catch (AuthorizationServiceException e) {
+      return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @Override
+  public ResponseEntity<String> updateProductStatus(ProductVO productVO) {
+    try {
+      this.productService.updateProductStatus(productVO);
+      return CafeUtils.getResponseEntity("OK", HttpStatus.OK);
+    } catch (BadRequestException e) {
+      return CafeUtils.getResponseEntity(CafeConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
+    } catch (EntityNotFoundException e) {
+      return CafeUtils.getResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+    } catch (AuthorizationServiceException e) {
+      return CafeUtils.getResponseEntity(CafeConstants.NOT_AUTHORIZED, HttpStatus.UNAUTHORIZED);
+    }
+  }
+
+  @Override
+  public ResponseEntity<List<ProductWrapper>> getProductsByCategory(Integer id) {
+    try {
+      List<ProductWrapper> products = this.productService.findProductsByCategoryId(id);
+      return new ResponseEntity<>(products, HttpStatus.OK);
+    } catch (EntityNotFoundException e) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
   }
 }

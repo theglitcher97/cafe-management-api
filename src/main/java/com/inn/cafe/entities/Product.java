@@ -15,6 +15,9 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 @NamedQuery(name = "Product.getAllProducts", query = "Select new com.inn.cafe.wrapper.ProductWrapper(id, name, price, description, p.category.id, p.category.name) From Product p")
+@NamedQuery(name = "Product.findProductById", query = "Select new com.inn.cafe.wrapper.ProductWrapper(id, name, price, description) From Product p where p.id = :id")
+@NamedQuery(name = "Product.findProductsByCategoryId", query = "Select new com.inn.cafe.wrapper.ProductWrapper(id, name) From Product p where p.category.id = :id")
+@NamedQuery(name = "Product.updateProductStatus", query = "Update Product p Set p.status =: status where p.id = :id")
 
 @Entity
 @DynamicInsert
