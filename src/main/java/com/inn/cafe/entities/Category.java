@@ -12,7 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 /* Name Queries */
-@NamedQuery(name = "Category.getAllCategories", query = "Select c from Category c")
+@NamedQuery(name = "Category.getAllCategories", query = "Select c from Category c where c.id in (select p.category.id from Product p where p.status='true')")
 
 @Entity
 @DynamicInsert
