@@ -11,4 +11,5 @@ public class CafeConstants {
   public static final String ENTITY_NOT_FOUND = "Entity not found";
   public static final String NOT_AUTHORIZED = "Not authorized";
   public static final String CREDENTIALS = "Credentials by Cafe Management System";
+  public static final String REPORTS_DIR = "/home/the-glitcher/Documents/Projects/SpringBoot/com.inn.cafe/src/main/java/com/inn/cafe/reports" ;
 }

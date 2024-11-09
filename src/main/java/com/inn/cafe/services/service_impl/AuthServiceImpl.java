@@ -11,7 +11,6 @@ import com.inn.cafe.services.AuthService;
 import com.inn.cafe.utils.EmailUtils;
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
