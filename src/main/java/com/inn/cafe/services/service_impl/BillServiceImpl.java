@@ -1,6 +1,7 @@
 package com.inn.cafe.services.service_impl;
 
 import com.google.gson.Gson;
+import com.inn.cafe.VOS.BillVO;
 import com.inn.cafe.VOS.GenerateReportVO;
 import com.inn.cafe.constants.CafeConstants;
 import com.inn.cafe.dao.BillDAO;
@@ -21,11 +22,18 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 import org.apache.coyote.BadRequestException;
+import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +43,6 @@ import org.springframework.stereotype.Service;
 public class BillServiceImpl implements BillService {
   @Autowired private JwtFilter jwtFilter;
   @Autowired private BillDAO billDAO;
-
 
   public static String getUUID() {
     Date date = new Date();
@@ -63,6 +70,50 @@ public class BillServiceImpl implements BillService {
     }
   }
 
+  @Override
+  public List<Bill> findAllBills() {
+    List<Bill> bills;
+
+    if (this.jwtFilter.isAdmin()) bills = this.billDAO.getAllBills();
+    else bills = this.billDAO.getBillsByUsername(this.jwtFilter.getCurrentUserName());
+
+    return bills;
+  }
+
+  @Override
+  public byte[] getPdf(GenerateReportVO reportVO) throws BadRequestException {
+    byte[] pdf = new byte[0];
+
+    if (reportVO.getUuid() == null || reportVO.getUuid().isBlank())
+      return pdf;
+
+    String filePath = CafeConstants.REPORTS_DIR+"/"+reportVO.getUuid()+".pdf";
+
+    if (!CafeUtils.fileExists(filePath)) {
+      reportVO.setIsGenerate(false);
+      this.generateReport(reportVO);
+    }
+
+    pdf = this.getByteArray(filePath);
+
+    return pdf;
+  }
+
+  private byte[] getByteArray(String filePath) {
+    File initialFile = new File(filePath);
+    try {
+      InputStream targetStream = new FileInputStream(initialFile);
+      byte[] byteArray = IOUtils.toByteArray(targetStream);
+      targetStream.close();
+      return byteArray;
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException(e);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
   private void generateReportPDF(GenerateReportVO generateReportVO, String filename)
       throws FileNotFoundException, DocumentException {
     String data =
@@ -74,7 +125,8 @@ public class BillServiceImpl implements BillService {
             generateReportVO.getPaymentMethod());
 
     Document document = new Document();
-    PdfWriter.getInstance(document, new FileOutputStream(CafeConstants.REPORTS_DIR + "/"+filename+".pdf"));
+    PdfWriter.getInstance(
+        document, new FileOutputStream(CafeConstants.REPORTS_DIR + "/" + filename + ".pdf"));
 
     document.open();
     this.setRectangleInPdf(document);
