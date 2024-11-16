@@ -15,4 +15,6 @@ public interface BillService {
   List<Bill> findAllBills();
 
   byte[] getPdf(GenerateReportVO reportVO) throws BadRequestException;
+
+  void removeBill(Integer id);
 }

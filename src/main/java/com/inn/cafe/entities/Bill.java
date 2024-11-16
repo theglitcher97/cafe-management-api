@@ -15,6 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 // Named Queries
 @NamedQuery(name = "Bill.getAllBills", query = "Select b from Bill b order by b.id desc")
 @NamedQuery(name = "Bill.getBillsByUsername", query = "Select b from Bill b where b.createdBy = :createdBy order by b.id desc")
+@NamedQuery(name = "Bill.removeBill", query = "Delete from Bill b where b.uuid = :uuid")
 
 @Entity
 @DynamicInsert

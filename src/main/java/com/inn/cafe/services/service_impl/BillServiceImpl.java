@@ -37,6 +37,7 @@ import org.apache.pdfbox.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -97,6 +98,20 @@ public class BillServiceImpl implements BillService {
     pdf = this.getByteArray(filePath);
 
     return pdf;
+  }
+
+  @Override
+  public void removeBill(Integer id) {
+    if (!this.jwtFilter.isAdmin())
+      throw new AuthorizationServiceException("");
+
+    this.billDAO.deleteById(id);
+    /*String filePath = CafeConstants.REPORTS_DIR+"/"+id+".pdf";
+
+    if (CafeUtils.fileExists(filePath)) {
+      File file = new File(filePath);
+      file.delete();
+    }*/
   }
 
   private byte[] getByteArray(String filePath) {

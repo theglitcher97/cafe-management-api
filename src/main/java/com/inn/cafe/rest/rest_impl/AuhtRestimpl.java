@@ -11,6 +11,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,7 +41,7 @@ public class AuhtRestimpl implements AuthRest {
     try {
       String token = this.authService.login(userVO);
       return CafeUtils.getResponseEntity(token, HttpStatus.CREATED);
-    } catch (BadRequestException e) {
+    } catch (BadRequestException | BadCredentialsException e) {
       return CafeUtils.getResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
     } catch (Exception e) {
       e.printStackTrace();
